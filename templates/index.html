@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skin Cancer Detection</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-inner">
+            <a class="brand" href="{{ url_for('home') }}">Skin Cancer Detection System</a>
+            <div class="nav-links">
+                <a href="{{ url_for('home') }}">Home</a>
+                {% if session.get("user_id") %}
+                <a href="{{ url_for('history') }}">History</a>
+                <span>{{ session.get("username") }}</span>
+                <a href="{{ url_for('logout') }}">Logout</a>
+                {% else %}
+                <a href="{{ url_for('login') }}">Login</a>
+                <a href="{{ url_for('register') }}">Register</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <main class="page">
+        <section class="card compact">
+            <h1>Skin Cancer Detection</h1>
+            <p class="subtitle">
+                Upload a skin lesion image to receive AI-based classification support.
+                This tool is for educational use and model demonstration.
+            </p>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+            {% endwith %}
+
+            <div class="upload-box">
+                <form action="/predict" method="POST" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="image">Select Skin Lesion Image</label>
+                        <input type="file" id="image" name="image" accept="image/*" required>
+                    </div>
+                    <button class="btn btn-primary" type="submit">Run Prediction</button>
+                </form>
+            </div>
+
+            <div class="disclaimer">
+                Medical disclaimer: This website is not a replacement for professional diagnosis.
+                Always consult a qualified dermatologist for clinical decisions.
+            </div>
+
+            {% if session.get("user_id") %}
+            <div class="actions">
+                <a class="btn btn-secondary" href="{{ url_for('history') }}">View Prediction History</a>
+            </div>
+            {% else %}
+            <div class="actions">
+                <a class="btn btn-secondary" href="{{ url_for('login') }}">Login to Save History</a>
+            </div>
+            {% endif %}
+        </section>
+    </main>
+
+    <footer class="footer">
+        Skin Cancer Detection System | Flask + TensorFlow
+    </footer>
+</body>
+</html>

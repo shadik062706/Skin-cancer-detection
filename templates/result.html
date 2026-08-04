@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction Result</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-inner">
+            <a class="brand" href="{{ url_for('home') }}">Skin Cancer Detection System</a>
+            <div class="nav-links">
+                <a href="{{ url_for('home') }}">Home</a>
+                {% if session.get("user_id") %}
+                <a href="{{ url_for('history') }}">History</a>
+                <a href="{{ url_for('logout') }}">Logout</a>
+                {% else %}
+                <a href="{{ url_for('login') }}">Login</a>
+                <a href="{{ url_for('register') }}">Register</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <main class="page">
+        <section class="card">
+            <h1>Prediction Result</h1>
+            <p class="subtitle">AI analysis output for the uploaded skin lesion image.</p>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+            {% endwith %}
+
+            <div class="result-grid">
+                <div>
+                    <img class="result-image" src="{{ url_for('static', filename=image_path) }}" alt="Uploaded skin image">
+                </div>
+                <div>
+                    <ul class="detail-list">
+                        <li><strong>Predicted Disease:</strong> {{ predicted_class }}</li>
+                        <li><strong>Class Code:</strong> {{ class_code }}</li>
+                        <li><strong>Confidence:</strong> {{ confidence }}%</li>
+                        <li><strong>Risk Level:</strong> <span class="badge {{ risk_color }}">{{ risk_level }}</span></li>
+                        {% if true_class_code %}
+                        <li><strong>Ground Truth (Dataset):</strong> {{ true_disease_name }} ({{ true_class_code }})</li>
+                        <li>
+                            <strong>Image Prediction Accuracy:</strong>
+                            {% if is_prediction_correct %}
+                            100% (Correct match with ground truth)
+                            {% else %}
+                            0% (Prediction does not match ground truth)
+                            {% endif %}
+                        </li>
+                        {% else %}
+                        <li><strong>Image Prediction Accuracy:</strong> Not available (ground truth label not found for this file)</li>
+                        {% endif %}
+                    </ul>
+                    <div class="description-box">
+                        <strong>Disease Description:</strong><br>
+                        {{ disease_description }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="actions">
+                <a href="{{ url_for('home') }}" class="btn btn-secondary">Back to Home</a>
+                <a href="{{ url_for('history') }}" class="btn btn-primary">View History</a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        Skin Cancer Detection System | Prediction Insight
+    </footer>
+</body>
+</html>

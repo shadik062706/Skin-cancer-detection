@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction History</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-inner">
+            <a class="brand" href="{{ url_for('home') }}">Skin Cancer Detection System</a>
+            <div class="nav-links">
+                <a href="{{ url_for('home') }}">Home</a>
+                <a href="{{ url_for('history') }}">History</a>
+                <span>{{ session.get("username") }}</span>
+                <a href="{{ url_for('logout') }}">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="page">
+        <section class="card">
+            <h1>Prediction History</h1>
+            <p class="subtitle">Saved prediction records for your logged-in account.</p>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+            {% endwith %}
+
+            {% if predictions %}
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Class Code</th>
+                            <th>Full Disease Name</th>
+                            <th>Confidence</th>
+                            <th>Risk Level</th>
+                            <th>Date/Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in predictions %}
+                        <tr>
+                            <td>
+                                <img class="thumb" src="{{ url_for('static', filename=item['image_path']) }}" alt="Prediction image">
+                            </td>
+                            <td>{{ item["class_code"] }}</td>
+                            <td>{{ item["full_disease_name"] }}</td>
+                            <td>{{ item["confidence"] }}%</td>
+                            <td>{{ item["risk_level"] }}</td>
+                            <td>{{ item["created_at"] }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty-box">No prediction history yet. Upload an image and run a prediction first.</div>
+            {% endif %}
+
+            <div class="actions">
+                <a href="{{ url_for('home') }}" class="btn btn-secondary">Back to Home</a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        Skin Cancer Detection System | User Prediction History
+    </footer>
+</body>
+</html>
