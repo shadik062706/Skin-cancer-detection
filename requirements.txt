@@ -4,3 +4,4 @@ Pillow==10.4.0; python_version < "3.13"
 Pillow>=12.0.0; python_version >= "3.13"
 numpy==1.26.4; python_version < "3.13"
 numpy>=2.0.0; python_version >= "3.13"
+gunicorn==22.0.0

@@ -203,6 +203,10 @@ def init_db():
     conn.close()
 
 
+os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
+init_db()
+
+
 def get_user_by_email(email):
     conn = get_db_connection()
     cur = conn.cursor()
